@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IRCTC Booking Date Calculator</title>
+	<link rel="icon" type="image/x-icon" href="https://www.apache.org/favicons/apple-touch-icon.png">
+    <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <script>
+    $(document).ready(function(){
+        let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        function formatDate(date) {
+            let dd = String(date?.getDate()).padStart(2, '0');
+            let mm = date?.toLocaleString('default', { month: 'short' });
+            let yyyy = date?.getFullYear();
+            let dayOfWeek = days[date?.getDay()];
+            return dd + ' ' + mm + ' ' + yyyy + " (" + dayOfWeek + ")";
+        }
+        let today = new Date();
+        let indianTime = new Date(today.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+        let maxReservationDate = new Date(indianTime?.getTime() + 120*24*60*60*1000);
+        let infoText = "";
+        infoText += "<p><b>Today's Date:</b> <i>" + formatDate(indianTime) + "<i></p>";
+        infoText += "<p><b>Advance Booking opens Up to :</b> <i>" + formatDate(maxReservationDate) +"<i></p>";
+        $("#info").html(infoText);
+        let yyyy_today = indianTime?.getFullYear();
+        let mm_today = String(indianTime?.getMonth() + 1).padStart(2, '0'); //January is 0!
+        let dd_today = String(indianTime?.getDate()).padStart(2, '0');
+        let todayDate = yyyy_today + '-' + mm_today + '-' + dd_today;
+        $("#journeyDate").attr("min", todayDate);
+        $("#journeyDate").change(function(){
+            let journeyDate = new Date($("#journeyDate").val());
+            let bookingStartDate = new Date(journeyDate?.getTime() - 120*24*60*60*1000);
+            let differenceInTime = bookingStartDate?.getTime() - indianTime?.getTime();
+            let differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24)); 
+            let resultText = "<p>Your selected journey date is <b><i>" + formatDate(journeyDate) + "</i></b></p>";
+            resultText += "<p>Booking Start Date: <b><i>" + formatDate(bookingStartDate) + "</i></b></p>";
+            if (differenceInDays < 0) {
+                resultText += "<p>The booking date for this journey date has passed. It was <b></i>" + Math.abs(differenceInDays) + " day(s)</i></b> ago.</p>";
+            } else if (differenceInDays === 0) {
+                resultText += "<p>The booking opens <b>today!</b></p>";
+            } else if (differenceInDays === 1) {
+                resultText += "<p>The booking opens <b>tomorrow!</b></p>";
+            } else {
+                resultText += "</p><b></i>" + differenceInDays + "</i></b> Days left for booking</p>";
+            }
+			Swal.fire({
+				title: 'Booking Information',
+				html: resultText,
+				confirmButtonText: 'Got it'
+			});
+        });
+    });
+    </script>
+	<style>
+		#journeyDate{
+			max-width: 350px;
+    		margin: 0 auto;
+			display: block;
+		}
+	</style>
+</head>
+<body>
+    <div class="container py-5 text-center">
+        <div id="info"></div>
+        <form>
+			<div class="form-group">
+				<label for="journeyDate"><b>Enter Your Journey Date:</b></label>
+				<input type="date" id="journeyDate" name="journeyDate" min="" class="form-control">
+			</div>
+        </form>
+    </div>
+</body>
+</html>
