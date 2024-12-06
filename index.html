@@ -32,7 +32,7 @@
         $("#journeyDate").attr("min", todayDate);
         $("#journeyDate").change(function(){
             let journeyDate = new Date($("#journeyDate").val());
-            let bookingStartDate = new Date(journeyDate?.getTime() - 120*24*60*60*1000);
+            let bookingStartDate = new Date(journeyDate?.getTime() - 60*24*60*60*1000);
             let differenceInTime = bookingStartDate?.getTime() - indianTime?.getTime();
             let differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24)); 
             let resultText = "<p>Your selected journey date is <b><i>" + formatDate(journeyDate) + "</i></b></p>";
