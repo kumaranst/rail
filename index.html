@@ -20,7 +20,7 @@
         }
         let today = new Date();
         let indianTime = new Date(today.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
-        let maxReservationDate = new Date(indianTime?.getTime() + 120*24*60*60*1000);
+	let maxReservationDate = new Date(indianTime?.getTime() + 60*24*60*60*1000);
         let infoText = "";
         infoText += "<p><b>Today's Date:</b> <i>" + formatDate(indianTime) + "<i></p>";
         infoText += "<p><b>Advance Booking opens Up to :</b> <i>" + formatDate(maxReservationDate) +"<i></p>";
